@@ -1,54 +1,42 @@
-def calculer_cout_total(duree):
-    offres = [
-        {"nom": "Illimité (200DH)", "minutes_gratuites": float('inf'), "cout_par_minute": 0},
-        {"nom": "2 heures (100DH)", "minutes_gratuites": 120, "cout_par_minute": 0.5},
-        {"nom": "1 heure (50DH)", "minutes_gratuites": 60, "cout_par_minute": 1},
-        {"nom": "30 minutes (20DH)", "minutes_gratuites": 30, "cout_par_minute": 1.5},
-        {"nom": "0DH (2DH par minute)", "minutes_gratuites": 0, "cout_par_minute": 2}
-    ]
+def calc_cout(duree):
+    cout_abo = [200, 100, 50, 20, 0]
+    min_gratuites = [float('inf'), 120, 60, 30, 0]
+    cout_min = [0, 0.5, 1, 1.5, 2]
 
-    couts = []
+    couts_mensuels = []
 
-    for offre in offres:
-        if duree <= offre["minutes_gratuites"]:
-            cout_total = 0
-        else:
-            cout_total = (duree - offre["minutes_gratuites"]) * offre["cout_par_minute"]
-        couts.append(cout_total)
+    for i in range(5):
+        min_supplement = max(duree - min_gratuites[i], 0)
+        cout_total = cout_abo[i] + (min_supplement * cout_min[i])
+        couts_mensuels.append(cout_total)
 
-    return couts
-
-def afficher_menu():
-    print("Menu :")
-    print("1 - Entrer la durée de communication")
-    print("2 - Afficher le coût mensuel par offre")
-    print("3 - Afficher l'offre la plus intéressante (moins cher)")
-    print("4 - Quitter le programme")
-
-duree = 0
+    return couts_mensuels
 
 while True:
-    afficher_menu()
-    choix = int(input("Faites votre choix : "))
+    print("Menu:")
+    print("1- Afficher la liste des coûts mensuels par offre")
+    print("2- Afficher l'offre la plus avantageuse (coût le plus bas)")
+    print("3- Quitter le programme")
 
-    if choix == 1:
-        duree_communication = int(input("Entrez la durée de communication du mois en minutes : "))
-    elif choix == 2:
-        if duree_communication != 0:
-            couts_mensuels = calculer_cout_total(duree_communication)
-            print("Coût mensuel par offre :", couts_mensuels)
-        else:
-            print("Veuillez d'abord entrer la durée de communication.")
-    elif choix == 3:
-        if duree_communication != 0:
-            couts_mensuels = calculer_cout_total(duree_communication)
-            cout_min = min(couts_mensuels)
-            index = couts_mensuels.index(cout_min)
-            print(f"L'offre la plus intéressante est l'offre {index + 1} avec un coût de {cout_min} DH")
-        else:
-            print("Veuillez d'abord entrer la durée de communication.")
-    elif choix == 4:
-        print("Programme quitté.")
+    choix = input("Choisissez une option: ")
+
+    if choix == "1":
+        duree = input("Entrez la durée de communication en minutes: ")
+        if duree.isdigit():
+            duree = int(duree)
+            prix = calc_cout(duree)
+            for i in range(len(prix)):
+                print(f"Coût mensuel pour l'offre {i + 1}: {prix[i]} DH")
+
+    elif choix == "2":
+        duree = input("Entrez la durée de communication en minutes: ")
+        if duree.isdigit():
+            duree = int(duree)
+            prix = calc_cout(duree)
+            min_val = min(prix)
+            offre_avant = prix.index(min_val) + 1
+            print(f"L'offre la plus avantageuse est l'offre {offre_avant} avec un coût de {min_val} DH")
+
+    elif choix == "3":
+        print("Fin du programme.")
         break
-    else:
-        print("Choix invalide. Veuillez entrer un choix valide.")
